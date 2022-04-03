@@ -1,7 +1,7 @@
 {
-  "name": "coinselect",
+  "name": "@cryptounifier/coinselect-plus",
   "version": "3.1.12",
-  "description": "A transaction input selection module for bitcoin.",
+  "description": "A transaction input selection module for bitcoin and altcoins.",
   "keywords": [
     "coinselect",
     "coin",
@@ -16,9 +16,9 @@
     "optimizing",
     "bitcoin"
   ],
-  "homepage": "https://github.com/bitcoinjs/coinselect",
+  "homepage": "https://github.com/cryptounifier/coinselect-plus",
   "bugs": {
-    "url": "https://github.com/bitcoinjs/coinselect/issues"
+    "url": "https://github.com/cryptounifier/coinselect-plus/issues"
   },
   "license": "MIT",
   "author": "Daniel Cousens",
@@ -33,7 +33,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bitcoinjs/coinselect.git"
+    "url": "https://github.com/cryptounifier/coinselect-plus.git"
   },
   "scripts": {
     "coverage": "nyc --check-coverage --branches 100 --functions 100 tape test/*.js",
