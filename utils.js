@@ -42,9 +42,9 @@ function sumOrNaN (range) {
 
 var BLANK_OUTPUT = outputBytes({})
 
-function finalize (inputs, outputs, feeRate) {
+function finalize (inputs, outputs, feeRate, relayFee) {
   var bytesAccum = transactionBytes(inputs, outputs)
-  var feeAfterExtraOutput = feeRate * (bytesAccum + BLANK_OUTPUT)
+  var feeAfterExtraOutput = Math.max(feeRate * (bytesAccum + BLANK_OUTPUT), relayFee) // RESPECT MINIMUM RELAY FEE
   var remainderAfterExtraOutput = sumOrNaN(inputs) - (sumOrNaN(outputs) + feeAfterExtraOutput)
 
   // is it worth a change output?
@@ -53,7 +53,7 @@ function finalize (inputs, outputs, feeRate) {
   }
 
   var fee = sumOrNaN(inputs) - sumOrNaN(outputs)
-  if (!isFinite(fee)) return { fee: feeRate * bytesAccum }
+  if (!isFinite(fee) || relayFee > fee) return { fee: Math.max(feeRate * bytesAccum, relayFee) }  // RESPECT MINIMUM RELAY FEE
 
   return {
     inputs: inputs,
