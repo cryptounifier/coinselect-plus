@@ -1,6 +1,6 @@
 {
   "name": "@cryptounifier/coinselect-plus",
-  "version": "3.2.1",
+  "version": "3.3.0",
   "description": "A transaction input selection module for bitcoin and altcoins.",
   "keywords": [
     "coinselect",
