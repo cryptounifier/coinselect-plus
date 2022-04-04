@@ -1,7 +1,7 @@
 var utils = require('./utils')
 
 // break utxos into the maximum number of 'output' possible
-module.exports = function broken (utxos, output, feeRate, relayFee) {
+module.exports = function broken (utxos, output, feeRate, relayFee, minimumValue) {
   if (!isFinite(utils.uintOrNaN(feeRate))) return {}
   if (!isFinite(utils.uintOrNaN(relayFee))) return {}
 
@@ -31,5 +31,5 @@ module.exports = function broken (utxos, output, feeRate, relayFee) {
     outputs.push(output)
   }
 
-  return utils.finalize(utxos, outputs, feeRate, relayFee)
+  return utils.finalize(utxos, outputs, feeRate, relayFee, minimumValue)
 }

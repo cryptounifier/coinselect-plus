@@ -42,13 +42,13 @@ function sumOrNaN (range) {
 
 var BLANK_OUTPUT = outputBytes({})
 
-function finalize (inputs, outputs, feeRate, relayFee) {
+function finalize (inputs, outputs, feeRate, relayFee, minimumValue) {
   var bytesAccum = transactionBytes(inputs, outputs)
   var feeAfterExtraOutput = Math.max(feeRate * (bytesAccum + BLANK_OUTPUT), relayFee) // RESPECT MINIMUM RELAY FEE
   var remainderAfterExtraOutput = sumOrNaN(inputs) - (sumOrNaN(outputs) + feeAfterExtraOutput)
 
   // is it worth a change output?
-  if (remainderAfterExtraOutput > dustThreshold({}, feeRate)) {
+  if (remainderAfterExtraOutput > Math.max(dustThreshold({}, feeRate), minimumValue)) {
     outputs = outputs.concat({ value: remainderAfterExtraOutput })
   }
 

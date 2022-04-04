@@ -2,7 +2,7 @@ var utils = require('./utils')
 
 // add inputs until we reach or surpass the target value (or deplete)
 // worst-case: O(n)
-module.exports = function accumulative(utxos, outputs, feeRate, relayFee) {
+module.exports = function accumulative(utxos, outputs, feeRate, relayFee, minimumValue) {
   if (!isFinite(utils.uintOrNaN(feeRate))) return {}
   if (!isFinite(utils.uintOrNaN(relayFee))) return {}
 
@@ -33,7 +33,7 @@ module.exports = function accumulative(utxos, outputs, feeRate, relayFee) {
     // go again?
     if (inAccum < outAccum + fee) continue
 
-    return utils.finalize(inputs, outputs, feeRate, relayFee)
+    return utils.finalize(inputs, outputs, feeRate, relayFee, minimumValue)
   }
 
   return { fee: Math.max(feeRate * bytesAccum, relayFee) }

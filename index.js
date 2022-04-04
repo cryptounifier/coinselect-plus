@@ -7,15 +7,15 @@ function utxoScore (x, feeRate) {
   return x.value - (feeRate * utils.inputBytes(x))
 }
 
-module.exports = function coinSelect (utxos, outputs, feeRate, relayFee) {
+module.exports = function coinSelect (utxos, outputs, feeRate, relayFee, minimumValue) {
   utxos = utxos.concat().sort(function (a, b) {
     return utxoScore(b, feeRate) - utxoScore(a, feeRate)
   })
 
   // attempt to use the blackjack strategy first (no change output)
-  var base = blackjack(utxos, outputs, feeRate, relayFee)
+  var base = blackjack(utxos, outputs, feeRate, relayFee, minimumValue)
   if (base.inputs) return base
 
   // else, try the accumulative strategy
-  return accumulative(utxos, outputs, feeRate, relayFee)
+  return accumulative(utxos, outputs, feeRate, relayFee, minimumValue)
 }
