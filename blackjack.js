@@ -29,8 +29,8 @@ module.exports = function blackjack (utxos, outputs, feeRate, relayFee) {
     // go again?
     if (inAccum < outAccum + fee) continue
 
-    return utils.finalize(inputs, outputs, feeRate)
+    return utils.finalize(inputs, outputs, feeRate, relayFee)
   }
 
-  return { fee: feeRate * bytesAccum }
+  return { fee: Math.max(feeRate * bytesAccum, relayFee) }
 }

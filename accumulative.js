@@ -20,7 +20,7 @@ module.exports = function accumulative(utxos, outputs, feeRate, relayFee) {
 
     // skip detrimental input
     if (utxoFee > utxo.value) {
-      if (i === utxos.length - 1) return { fee: feeRate * (bytesAccum + utxoBytes) }
+      if (i === utxos.length - 1) return { fee: Math.max(feeRate * (bytesAccum + utxoBytes), relayFee) }
       continue
     }
 
@@ -33,7 +33,7 @@ module.exports = function accumulative(utxos, outputs, feeRate, relayFee) {
     // go again?
     if (inAccum < outAccum + fee) continue
 
-    return utils.finalize(inputs, outputs, feeRate)
+    return utils.finalize(inputs, outputs, feeRate, relayFee)
   }
 
   return { fee: Math.max(feeRate * bytesAccum, relayFee) }
