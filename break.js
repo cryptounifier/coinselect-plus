@@ -1,22 +1,21 @@
 var utils = require('./utils')
 
 // break utxos into the maximum number of 'output' possible
-module.exports = function broken (utxos, output, feeRate, relayFee, minimumValue) {
+module.exports = function broken (utxos, output, feeRate, minimumValue) {
   if (!isFinite(utils.uintOrNaN(feeRate))) return {}
-  if (!isFinite(utils.uintOrNaN(relayFee))) return {}
 
   var bytesAccum = utils.transactionBytes(utxos, [])
   var value = utils.uintOrNaN(output.value)
   var inAccum = utils.sumOrNaN(utxos)
   if (!isFinite(value) ||
-      !isFinite(inAccum)) return { fee: Math.max(feeRate * bytesAccum, relayFee) }
+      !isFinite(inAccum)) return { fee: feeRate * bytesAccum }
 
   var outputBytes = utils.outputBytes(output)
   var outAccum = 0
   var outputs = []
 
   while (true) {
-    var fee = Math.max(feeRate * (bytesAccum + outputBytes), relayFee)
+    var fee = feeRate * (bytesAccum + outputBytes)
 
     // did we bust?
     if (inAccum < (outAccum + fee + value)) {
@@ -31,5 +30,5 @@ module.exports = function broken (utxos, output, feeRate, relayFee, minimumValue
     outputs.push(output)
   }
 
-  return utils.finalize(utxos, outputs, feeRate, relayFee, minimumValue)
+  return utils.finalize(utxos, outputs, feeRate, minimumValue)
 }

@@ -2,9 +2,8 @@ var utils = require('./utils')
 
 // add inputs until we reach or surpass the target value (or deplete)
 // worst-case: O(n)
-module.exports = function accumulative(utxos, outputs, feeRate, relayFee, minimumValue) {
+module.exports = function accumulative(utxos, outputs, feeRate, minimumValue) {
   if (!isFinite(utils.uintOrNaN(feeRate))) return {}
-  if (!isFinite(utils.uintOrNaN(relayFee))) return {}
 
   var bytesAccum = utils.transactionBytes([], outputs)
 
@@ -15,12 +14,12 @@ module.exports = function accumulative(utxos, outputs, feeRate, relayFee, minimu
   for (var i = 0; i < utxos.length; ++i) {
     var utxo = utxos[i]
     var utxoBytes = utils.inputBytes(utxo)
-    var utxoFee = Math.max(feeRate * utxoBytes, relayFee)
+    var utxoFee = feeRate * utxoBytes
     var utxoValue = utils.uintOrNaN(utxo.value)
 
     // skip detrimental input
     if (utxoFee > utxo.value) {
-      if (i === utxos.length - 1) return { fee: Math.max(feeRate * (bytesAccum + utxoBytes), relayFee) }
+      if (i === utxos.length - 1) return { fee: feeRate * (bytesAccum + utxoBytes) }
       continue
     }
 
@@ -29,11 +28,11 @@ module.exports = function accumulative(utxos, outputs, feeRate, relayFee, minimu
     inputs.push(utxo)
 
     // go again?
-    var fee = Math.max(feeRate * bytesAccum, relayFee)
+    var fee = feeRate * bytesAccum
     if (inAccum < outAccum + fee) continue
 
-    return utils.finalize(inputs, outputs, feeRate, relayFee, minimumValue)
+    return utils.finalize(inputs, outputs, feeRate, minimumValue)
   }
 
-  return { fee: Math.max(feeRate * bytesAccum, relayFee) }
+  return { fee: feeRate * bytesAccum }
 }

@@ -2,9 +2,8 @@ var utils = require('./utils')
 
 // only add inputs if they don't bust the target value (aka, exact match)
 // worst-case: O(n)
-module.exports = function blackjack (utxos, outputs, feeRate, relayFee, minimumValue) {
+module.exports = function blackjack (utxos, outputs, feeRate, minimumValue) {
   if (!isFinite(utils.uintOrNaN(feeRate))) return {}
-  if (!isFinite(utils.uintOrNaN(relayFee))) return {}
 
   var bytesAccum = utils.transactionBytes([], outputs)
 
@@ -16,7 +15,7 @@ module.exports = function blackjack (utxos, outputs, feeRate, relayFee, minimumV
   for (var i = 0; i < utxos.length; ++i) {
     var input = utxos[i]
     var inputBytes = utils.inputBytes(input)
-    var fee = Math.max(feeRate * (bytesAccum + inputBytes), relayFee)
+    var fee = feeRate * (bytesAccum + inputBytes)
     var inputValue = utils.uintOrNaN(input.value)
 
     // would it waste value?
@@ -29,8 +28,8 @@ module.exports = function blackjack (utxos, outputs, feeRate, relayFee, minimumV
     // go again?
     if (inAccum < outAccum + fee) continue
 
-    return utils.finalize(inputs, outputs, feeRate, relayFee, minimumValue)
+    return utils.finalize(inputs, outputs, feeRate, minimumValue)
   }
 
-  return { fee: Math.max(feeRate * bytesAccum, relayFee) }
+  return { fee: feeRate * bytesAccum }
 }

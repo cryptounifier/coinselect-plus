@@ -29,8 +29,7 @@ This is calculated independently by `utils.finalize`, irrespective of the algori
 
 ``` javascript
 let coinSelect = require('@cryptounifier/coinselect-plus')
-let feeRate = 55 // satoshis per byte
-let relayFee = 100 // satoshis
+let feeRate = 55 // satoshis per byte (It should respect the altcoin minimum relay fee)
 let minimumValue = 546 // satoshis
 let utxos = [
   ...,
@@ -59,7 +58,7 @@ let targets = [
 ]
 
 // ...
-let { inputs, outputs, fee } = coinSelect(utxos, targets, feeRate, relayFee, minimumValue)
+let { inputs, outputs, fee } = coinSelect(utxos, targets, feeRate, minimumValue)
 
 // the accumulated fee is always returned for analysis
 console.log(fee)
