@@ -15,7 +15,7 @@ module.exports = function accumulative(utxos, outputs, feeRate, relayFee, minimu
   for (var i = 0; i < utxos.length; ++i) {
     var utxo = utxos[i]
     var utxoBytes = utils.inputBytes(utxo)
-    var utxoFee = feeRate * utxoBytes
+    var utxoFee = Math.max(feeRate * utxoBytes, relayFee)
     var utxoValue = utils.uintOrNaN(utxo.value)
 
     // skip detrimental input
@@ -28,9 +28,8 @@ module.exports = function accumulative(utxos, outputs, feeRate, relayFee, minimu
     inAccum += utxoValue
     inputs.push(utxo)
 
-    var fee = Math.max(feeRate * bytesAccum, relayFee)
-
     // go again?
+    var fee = Math.max(feeRate * bytesAccum, relayFee)
     if (inAccum < outAccum + fee) continue
 
     return utils.finalize(inputs, outputs, feeRate, relayFee, minimumValue)
